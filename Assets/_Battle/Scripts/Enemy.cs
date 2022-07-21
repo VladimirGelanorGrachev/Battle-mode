@@ -12,12 +12,14 @@ namespace BattleScripts
         private const float KMoney = 5f;
         private const float KPower = 1.5f;
         private const float MaxHealthPlayer = 20;
+        private const float MaxWantedPlayer = 5;
 
         private readonly string _name;
 
         private int _moneyPlayer;
         private int _healthPlayer;
         private int _powerPlayer;
+        private int _wantedPlayer;
 
 
         public Enemy(string name) =>
@@ -39,6 +41,10 @@ namespace BattleScripts
                 case DataType.Power:
                     _powerPlayer = playerData.Value;
                     break;
+
+                case DataType.Wanted:
+                    _wantedPlayer = playerData.Value;
+                    break;
             }
 
             Debug.Log($"Notified {_name} change to {playerData.DataType:F}");
@@ -49,12 +55,18 @@ namespace BattleScripts
             int kHealth = CalcKHealth();
             float moneyRatio = _moneyPlayer / KMoney;
             float powerRatio = _powerPlayer / KPower;
+            float wantedRatio = _wantedPlayer;
 
-            return (int)(moneyRatio + kHealth + powerRatio);
+            if (_wantedPlayer <= 2)
+                return (int)((moneyRatio + kHealth + powerRatio) * 1);
+
+            else
+                return (int)(moneyRatio + kHealth + powerRatio);
         }
 
         private int CalcKHealth() =>
             _healthPlayer > MaxHealthPlayer ? 100 : 5;
+        
     }
 }
 
